@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"plasticine/db"
+	"plasticine/server"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	server.NewServer(":8080", db.NewDB()).Run()
 }
