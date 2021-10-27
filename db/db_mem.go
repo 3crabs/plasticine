@@ -3,6 +3,7 @@ package db
 import "plasticine/models"
 
 type db struct {
+	seq    int
 	groups []models.Group
 }
 
@@ -12,6 +13,8 @@ func NewDB() DB {
 
 func (db *db) AddGroups(groups []models.Group) error {
 	for _, g := range groups {
+		db.seq++
+		g.Id = db.seq
 		db.groups = append(db.groups, g)
 	}
 	return nil
