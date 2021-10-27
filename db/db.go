@@ -3,6 +3,7 @@ package db
 import "plasticine/models"
 
 type DB interface {
-	AddGroups(groups []models.Group) error
+	AddGroup(group models.Group) error
 	GetGroups() []models.Group
+	UpdateGroup(group models.Group) error
 }
