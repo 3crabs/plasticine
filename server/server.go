@@ -3,11 +3,9 @@ package server
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"net/http/httptest"
 	"plasticine/db"
 	"plasticine/models"
 	"strconv"
-	"strings"
 )
 
 type server struct {
@@ -24,27 +22,6 @@ func NewServer(port string, db db.DB) *server {
 	}
 	s.routes()
 	return s
-}
-
-func (s *server) Get() (*httptest.ResponseRecorder, echo.Context) {
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	return rec, s.router.NewContext(req, rec)
-}
-
-func (s *server) Post(body *strings.Reader) (*httptest.ResponseRecorder, echo.Context) {
-	req := httptest.NewRequest(http.MethodPost, "/", body)
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	return rec, s.router.NewContext(req, rec)
-}
-
-func (s *server) Put(body *strings.Reader) (*httptest.ResponseRecorder, echo.Context) {
-	req := httptest.NewRequest(http.MethodPut, "/", body)
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	return rec, s.router.NewContext(req, rec)
 }
 
 func (s *server) routes() {
