@@ -1,28 +1,34 @@
 package server
 
 import (
+	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"plasticine/db"
+	"plasticine/models"
 	"strconv"
 	"strings"
 	"testing"
 )
 
-func (s *server) addSubjectReq(subjectJSON string) {
-	_, c := s.post(strings.NewReader(subjectJSON))
+func (s *server) addSubjectReq(subject models.Subject) {
+	bytes, _ := json.Marshal(subject)
+	_, c := s.post(strings.NewReader(string(bytes)))
 	_ = s.addSubject(c)
 }
 
-func (s *server) getSubjectsReq() *httptest.ResponseRecorder {
+func (s *server) getSubjectsReq() (*httptest.ResponseRecorder, []models.Subject) {
 	rec, c := s.get()
 	_ = s.getSubjects(c)
-	return rec
+	var subject []models.Subject
+	_ = json.Unmarshal([]byte(rec.Body.String()), &subject)
+	return rec, subject
 }
 
-func (s *server) updateSubjectReq(subjectId int, subjectJSON string) {
-	_, c := s.put(strings.NewReader(subjectJSON))
+func (s *server) updateSubjectReq(subjectId int, subject models.Subject) {
+	bytes, _ := json.Marshal(subject)
+	_, c := s.put(strings.NewReader(string(bytes)))
 	c.SetParamNames("subjectId")
 	c.SetParamValues(strconv.Itoa(subjectId))
 	_ = s.updateSubject(c)
@@ -31,35 +37,42 @@ func (s *server) updateSubjectReq(subjectId int, subjectJSON string) {
 func TestGetSubjects(t *testing.T) {
 	s := NewServer(":8080", db.NewDB())
 
-	rec := s.getSubjectsReq()
+	rec, subjects := s.getSubjectsReq()
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "[]\n", rec.Body.String())
+	assert.Equal(t, 0, len(subjects))
 }
 
 func TestAddSubject(t *testing.T) {
 	s := NewServer(":8080", db.NewDB())
 
-	s.addSubjectReq("{\"name\":\"name\"}")
+	subject := models.Subject{Name: "name"}
+	s.addSubjectReq(subject)
 
-	rec := s.getSubjectsReq()
+	rec, subjects := s.getSubjectsReq()
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "[{\"id\":1,\"name\":\"name\"}]\n", rec.Body.String())
+	assert.Equal(t, 1, len(subjects))
+	assert.Equal(t, subject.Name, subjects[0].Name)
 }
 
 func TestUpdateSubject(t *testing.T) {
 	s := NewServer(":8080", db.NewDB())
 
-	s.addSubjectReq("{\"name\":\"name\"}")
+	subject := models.Subject{Name: "name"}
+	s.addSubjectReq(subject)
 
-	rec := s.getSubjectsReq()
+	rec, subjects := s.getSubjectsReq()
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "[{\"id\":1,\"name\":\"name\"}]\n", rec.Body.String())
+	assert.Equal(t, 1, len(subjects))
+	assert.Equal(t, subject.Name, subjects[0].Name)
 
-	s.updateSubjectReq(1, "{\"name\":\"new name\"}")
+	subject.Id = subjects[0].Id
+	subject.Name = "new name"
+	s.updateSubjectReq(1, subject)
 
-	rec = s.getSubjectsReq()
+	rec, subjects = s.getSubjectsReq()
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "[{\"id\":1,\"name\":\"new name\"}]\n", rec.Body.String())
+	assert.Equal(t, 1, len(subjects))
+	assert.Equal(t, subject.Name, subjects[0].Name)
 }

@@ -45,7 +45,7 @@ func (s *server) updateUserReq(userId int, user models.User) {
 	_, c := s.put(strings.NewReader(string(bytes)))
 	c.SetParamNames("userId")
 	c.SetParamValues(strconv.Itoa(userId))
-	_ = s.updateGroup(c)
+	_ = s.updateUser(c)
 }
 
 func TestGetStudents(t *testing.T) {
@@ -102,18 +102,58 @@ func TestAddTeacher(t *testing.T) {
 	assert.Equal(t, teacher.Role, teachers[0].Role)
 }
 
-//func TestUpdateGroup(t *testing.T) {
-//	s := NewServer(":8080", db.NewDB())
-//
-//	s.addGroupsReq("{\"name\":\"name\"}")
-//
-//	rec := s.getGroupsReq()
-//	assert.Equal(t, http.StatusOK, rec.Code)
-//	assert.Equal(t, "[{\"id\":1,\"name\":\"name\"}]\n", rec.Body.String())
-//
-//	s.updateGroupReq(1, "{\"name\":\"new name\"}")
-//
-//	rec = s.getGroupsReq()
-//	assert.Equal(t, http.StatusOK, rec.Code)
-//	assert.Equal(t, "[{\"id\":1,\"name\":\"new name\"}]\n", rec.Body.String())
-//}
+func TestUpdateStudent(t *testing.T) {
+	s := NewServer(":8080", db.NewDB())
+
+	student := models.User{
+		LastName:  "lastname",
+		FirstName: "firstname",
+		Role:      models.Student,
+	}
+	s.addUserReq(student)
+
+	rec, students := s.getStudentsReq()
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, student.LastName, students[0].LastName)
+	assert.Equal(t, student.FirstName, students[0].FirstName)
+	assert.Equal(t, student.Role, students[0].Role)
+
+	student.Id = students[0].Id
+	student.FirstName = "new firstname"
+	student.LastName = "new lastname"
+	s.updateUserReq(student.Id, student)
+
+	rec, students = s.getStudentsReq()
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, student.LastName, students[0].LastName)
+	assert.Equal(t, student.FirstName, students[0].FirstName)
+	assert.Equal(t, student.Role, students[0].Role)
+}
+
+func TestUpdateTeacher(t *testing.T) {
+	s := NewServer(":8080", db.NewDB())
+
+	teacher := models.User{
+		LastName:  "lastname",
+		FirstName: "firstname",
+		Role:      models.Teacher,
+	}
+	s.addUserReq(teacher)
+
+	rec, teachers := s.getTeachersReq()
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, teacher.LastName, teachers[0].LastName)
+	assert.Equal(t, teacher.FirstName, teachers[0].FirstName)
+	assert.Equal(t, teacher.Role, teachers[0].Role)
+
+	teacher.Id = teachers[0].Id
+	teacher.FirstName = "new firstname"
+	teacher.LastName = "new lastname"
+	s.updateUserReq(teacher.Id, teacher)
+
+	rec, teachers = s.getTeachersReq()
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, teacher.LastName, teachers[0].LastName)
+	assert.Equal(t, teacher.FirstName, teachers[0].FirstName)
+	assert.Equal(t, teacher.Role, teachers[0].Role)
+}
