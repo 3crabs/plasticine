@@ -12,7 +12,7 @@ func (s *server) routesUser() {
 	s.router.GET("/teachers", s.getStudents)
 	s.router.POST("/users", s.addUser)
 	s.router.PUT("/users/:userId", s.updateUser)
-	s.router.GET("/students/:studentId", s.getStudentInfo)
+	s.router.GET("/users/:userId", s.getUserInfo)
 }
 
 func (s *server) getStudents(c echo.Context) error {
@@ -52,12 +52,12 @@ func (s *server) updateUser(c echo.Context) error {
 	return c.String(http.StatusOK, "user updated")
 }
 
-func (s *server) getStudentInfo(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("studentId"))
+func (s *server) getUserInfo(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("userId"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
-	userInfo, err := s.db.GetStudentInfo(id)
+	userInfo, err := s.db.GetUserInfo(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

@@ -98,10 +98,10 @@ func (db *db) UpdateUser(user models.User) error {
 	return nil
 }
 
-func (db *db) GetStudentInfo(userId int) (*models.UserInfo, error) {
+func (db *db) GetUserInfo(userId int) (*models.UserInfo, error) {
 	var user *models.User
 	for _, u := range db.users {
-		if u.Id == userId && u.Role == models.Student {
+		if u.Id == userId {
 			user = &u
 		}
 	}
@@ -116,7 +116,7 @@ func (db *db) GetStudentInfo(userId int) (*models.UserInfo, error) {
 		if err != nil {
 			return nil, err
 		}
-		userInfo.Group = *group
+		userInfo.Group = group
 	}
 	return &userInfo, nil
 }

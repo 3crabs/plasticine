@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -43,13 +42,12 @@ func (s *server) updateUserReq(userId int, user models.User) {
 	_ = s.updateUser(c)
 }
 
-func (s *server) getStudentInfoReq(userId int) models.UserInfo {
+func (s *server) getUserInfoReq(userId int) models.UserInfo {
 	rec, c := s.get()
-	c.SetParamNames("studentId")
+	c.SetParamNames("userId")
 	c.SetParamValues(strconv.Itoa(userId))
-	_ = s.getStudentInfo(c)
+	_ = s.getUserInfo(c)
 	var userInfo models.UserInfo
-	fmt.Println(rec.Body.String())
 	_ = json.Unmarshal([]byte(rec.Body.String()), &userInfo)
 	return userInfo
 }
@@ -190,7 +188,7 @@ func TestAddGroupForStudent(t *testing.T) {
 	assert.Equal(t, group.Id, students[0].GroupId)
 }
 
-func TestGetUserInfo(t *testing.T) {
+func TestGetStudentInfo(t *testing.T) {
 	s := NewServer(":8080", db.NewDB())
 
 	group := models.Group{Name: "name"}
@@ -208,8 +206,24 @@ func TestGetUserInfo(t *testing.T) {
 	_, students := s.getStudentsReq()
 	student = students[0]
 
-	studentInfo := s.getStudentInfoReq(student.Id)
-	assert.Equal(t, studentInfo.User.GroupId, group.Id)
+	studentInfo := s.getUserInfoReq(student.Id)
+	assert.Equal(t, studentInfo.GroupId, group.Id)
 	assert.Equal(t, studentInfo.Group.Id, group.Id)
 	assert.Equal(t, studentInfo.Group.Name, group.Name)
+}
+
+func TestGetTeacherInfo(t *testing.T) {
+	s := NewServer(":8080", db.NewDB())
+
+	teacher := models.User{
+		LastName:  "lastname",
+		FirstName: "firstname",
+		Role:      models.Teacher,
+	}
+	s.addUserReq(teacher)
+	_, teachers := s.getTeachersReq()
+	teacher = teachers[0]
+
+	studentInfo := s.getUserInfoReq(teacher.Id)
+	assert.Equal(t, studentInfo.GroupId, 0)
 }

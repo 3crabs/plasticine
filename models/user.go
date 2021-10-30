@@ -18,5 +18,5 @@ type User struct {
 
 type UserInfo struct {
 	*User
-	Group `json:"group"`
+	*Group `json:"group"`
 }
