@@ -1,6 +1,9 @@
 package db
 
-import "plasticine/models"
+import (
+	"errors"
+	"plasticine/models"
+)
 
 type db struct {
 	groupSeq int
@@ -93,4 +96,40 @@ func (db *db) UpdateUser(user models.User) error {
 		}
 	}
 	return nil
+}
+
+func (db *db) GetStudentInfo(userId int) (*models.UserInfo, error) {
+	var user *models.User
+	for _, u := range db.users {
+		if u.Id == userId && u.Role == models.Student {
+			user = &u
+		}
+	}
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
+	userInfo := models.UserInfo{
+		User: user,
+	}
+	if user.GroupId != 0 {
+		group, err := db.GetGroupById(user.GroupId)
+		if err != nil {
+			return nil, err
+		}
+		userInfo.Group = *group
+	}
+	return &userInfo, nil
+}
+
+func (db *db) GetGroupById(groupId int) (*models.Group, error) {
+	var group *models.Group
+	for _, g := range db.groups {
+		if g.Id == groupId {
+			group = &g
+		}
+	}
+	if group == nil {
+		return nil, errors.New("group not found")
+	}
+	return group, nil
 }

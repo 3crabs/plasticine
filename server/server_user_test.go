@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -35,14 +36,22 @@ func (s *server) addUserReq(user models.User) {
 }
 
 func (s *server) updateUserReq(userId int, user models.User) {
-	bytes, err := json.Marshal(user)
-	if err != nil {
-		return
-	}
+	bytes, _ := json.Marshal(user)
 	_, c := s.put(strings.NewReader(string(bytes)))
 	c.SetParamNames("userId")
 	c.SetParamValues(strconv.Itoa(userId))
 	_ = s.updateUser(c)
+}
+
+func (s *server) getStudentInfoReq(userId int) models.UserInfo {
+	rec, c := s.get()
+	c.SetParamNames("studentId")
+	c.SetParamValues(strconv.Itoa(userId))
+	_ = s.getStudentInfo(c)
+	var userInfo models.UserInfo
+	fmt.Println(rec.Body.String())
+	_ = json.Unmarshal([]byte(rec.Body.String()), &userInfo)
+	return userInfo
 }
 
 func TestGetStudents(t *testing.T) {
@@ -179,4 +188,28 @@ func TestAddGroupForStudent(t *testing.T) {
 
 	_, students = s.getStudentsReq()
 	assert.Equal(t, group.Id, students[0].GroupId)
+}
+
+func TestGetUserInfo(t *testing.T) {
+	s := NewServer(":8080", db.NewDB())
+
+	group := models.Group{Name: "name"}
+	s.addGroupsReq(group)
+	_, groups := s.getGroupsReq()
+	group = groups[0]
+
+	student := models.User{
+		LastName:  "lastname",
+		FirstName: "firstname",
+		Role:      models.Student,
+		GroupId:   group.Id,
+	}
+	s.addUserReq(student)
+	_, students := s.getStudentsReq()
+	student = students[0]
+
+	studentInfo := s.getStudentInfoReq(student.Id)
+	assert.Equal(t, studentInfo.User.GroupId, group.Id)
+	assert.Equal(t, studentInfo.Group.Id, group.Id)
+	assert.Equal(t, studentInfo.Group.Name, group.Name)
 }

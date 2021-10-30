@@ -15,3 +15,8 @@ type User struct {
 	Role       UserRole `json:"role"`
 	GroupId    int      `json:"group_id"`
 }
+
+type UserInfo struct {
+	*User
+	Group `json:"group"`
+}
