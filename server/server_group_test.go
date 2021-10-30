@@ -13,10 +13,7 @@ import (
 )
 
 func (s *server) addGroupsReq(group models.Group) {
-	bytes, err := json.Marshal(group)
-	if err != nil {
-		return
-	}
+	bytes, _ := json.Marshal(group)
 	_, c := s.post(strings.NewReader(string(bytes)))
 	_ = s.addGroup(c)
 }
@@ -30,10 +27,7 @@ func (s *server) getGroupsReq() (*httptest.ResponseRecorder, []models.Group) {
 }
 
 func (s *server) updateGroupReq(groupId int, group models.Group) {
-	bytes, err := json.Marshal(group)
-	if err != nil {
-		return
-	}
+	bytes, _ := json.Marshal(group)
 	_, c := s.put(strings.NewReader(string(bytes)))
 	c.SetParamNames("groupId")
 	c.SetParamValues(strconv.Itoa(groupId))

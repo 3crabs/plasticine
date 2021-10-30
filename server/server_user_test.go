@@ -29,10 +29,7 @@ func (s *server) getTeachersReq() (*httptest.ResponseRecorder, []models.User) {
 }
 
 func (s *server) addUserReq(user models.User) {
-	bytes, err := json.Marshal(user)
-	if err != nil {
-		return
-	}
+	bytes, _ := json.Marshal(user)
 	_, c := s.post(strings.NewReader(string(bytes)))
 	_ = s.addUser(c)
 }
@@ -156,4 +153,30 @@ func TestUpdateTeacher(t *testing.T) {
 	assert.Equal(t, teacher.LastName, teachers[0].LastName)
 	assert.Equal(t, teacher.FirstName, teachers[0].FirstName)
 	assert.Equal(t, teacher.Role, teachers[0].Role)
+}
+
+func TestAddGroupForStudent(t *testing.T) {
+	s := NewServer(":8080", db.NewDB())
+
+	group := models.Group{Name: "name"}
+	s.addGroupsReq(group)
+	_, groups := s.getGroupsReq()
+	group = groups[0]
+
+	student := models.User{
+		LastName:  "lastname",
+		FirstName: "firstname",
+		Role:      models.Student,
+	}
+	s.addUserReq(student)
+
+	_, students := s.getStudentsReq()
+	assert.Equal(t, 0, students[0].GroupId)
+
+	student = students[0]
+	student.GroupId = group.Id
+	s.updateUserReq(student.Id, student)
+
+	_, students = s.getStudentsReq()
+	assert.Equal(t, group.Id, students[0].GroupId)
 }
