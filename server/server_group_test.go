@@ -12,7 +12,7 @@ import (
 
 func (s *server) addGroupsReq(groupJSON string) {
 	_, c := s.post(strings.NewReader(groupJSON))
-	_ = s.addGroups(c)
+	_ = s.addGroup(c)
 }
 
 func (s *server) getGroupsReq() *httptest.ResponseRecorder {

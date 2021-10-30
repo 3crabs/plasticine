@@ -8,12 +8,21 @@ type db struct {
 
 	subjectSeq int
 	subjects   []models.Subject
+
+	userSeq int
+	users   []models.User
 }
 
 func NewDB() DB {
 	return &db{
+		groupSeq: 0,
 		groups:   []models.Group{},
-		subjects: []models.Subject{},
+
+		subjectSeq: 0,
+		subjects:   []models.Subject{},
+
+		userSeq: 0,
+		users:   []models.User{},
 	}
 }
 
@@ -48,10 +57,39 @@ func (db *db) GetSubjects() []models.Subject {
 	return db.subjects
 }
 
-func (db db) UpdateSubject(subject models.Subject) error {
+func (db *db) UpdateSubject(subject models.Subject) error {
 	for i, s := range db.subjects {
 		if s.Id == subject.Id {
 			db.subjects[i] = subject
+		}
+	}
+	return nil
+}
+
+func (db *db) GetUsersByRole(role models.UserRole) []models.User {
+	var users []models.User
+	for _, u := range db.users {
+		if u.Role == role {
+			users = append(users, u)
+		}
+	}
+	if users == nil {
+		return []models.User{}
+	}
+	return users
+}
+
+func (db *db) AddUser(user models.User) error {
+	db.userSeq++
+	user.Id = db.userSeq
+	db.users = append(db.users, user)
+	return nil
+}
+
+func (db *db) UpdateUser(user models.User) error {
+	for i, u := range db.users {
+		if u.Id == user.Id {
+			db.users[i] = user
 		}
 	}
 	return nil

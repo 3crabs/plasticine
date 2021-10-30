@@ -9,8 +9,8 @@ import (
 
 func (s *server) routesSubject() {
 	s.router.POST("/subjects", s.addSubject)
-	//s.router.GET("/groups", s.getGroups)
-	//s.router.PUT("/groups/:groupId", s.updateGroup)
+	s.router.GET("/subjects", s.getGroups)
+	s.router.PUT("/subjects/:subjectId", s.updateGroup)
 }
 
 func (s *server) addSubject(c echo.Context) error {

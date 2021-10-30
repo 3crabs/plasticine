@@ -8,12 +8,12 @@ import (
 )
 
 func (s *server) routesGroup() {
-	s.router.POST("/groups", s.addGroups)
+	s.router.POST("/groups", s.addGroup)
 	s.router.GET("/groups", s.getGroups)
 	s.router.PUT("/groups/:groupId", s.updateGroup)
 }
 
-func (s *server) addGroups(c echo.Context) error {
+func (s *server) addGroup(c echo.Context) error {
 	var group models.Group
 	if err := c.Bind(&group); err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
