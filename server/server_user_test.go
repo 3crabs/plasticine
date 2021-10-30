@@ -37,8 +37,12 @@ func (s *server) addUserReq(user models.User) {
 	_ = s.addUser(c)
 }
 
-func (s *server) updateUserReq(userId int, userJSON string) {
-	_, c := s.put(strings.NewReader(userJSON))
+func (s *server) updateUserReq(userId int, user models.User) {
+	bytes, err := json.Marshal(user)
+	if err != nil {
+		return
+	}
+	_, c := s.put(strings.NewReader(string(bytes)))
 	c.SetParamNames("userId")
 	c.SetParamValues(strconv.Itoa(userId))
 	_ = s.updateGroup(c)

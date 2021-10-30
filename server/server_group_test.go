@@ -1,28 +1,40 @@
 package server
 
 import (
+	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"plasticine/db"
+	"plasticine/models"
 	"strconv"
 	"strings"
 	"testing"
 )
 
-func (s *server) addGroupsReq(groupJSON string) {
-	_, c := s.post(strings.NewReader(groupJSON))
+func (s *server) addGroupsReq(group models.Group) {
+	bytes, err := json.Marshal(group)
+	if err != nil {
+		return
+	}
+	_, c := s.post(strings.NewReader(string(bytes)))
 	_ = s.addGroup(c)
 }
 
-func (s *server) getGroupsReq() *httptest.ResponseRecorder {
+func (s *server) getGroupsReq() (*httptest.ResponseRecorder, []models.Group) {
 	rec, c := s.get()
 	_ = s.getGroups(c)
-	return rec
+	var groups []models.Group
+	_ = json.Unmarshal([]byte(rec.Body.String()), &groups)
+	return rec, groups
 }
 
-func (s *server) updateGroupReq(groupId int, groupJSON string) {
-	_, c := s.put(strings.NewReader(groupJSON))
+func (s *server) updateGroupReq(groupId int, group models.Group) {
+	bytes, err := json.Marshal(group)
+	if err != nil {
+		return
+	}
+	_, c := s.put(strings.NewReader(string(bytes)))
 	c.SetParamNames("groupId")
 	c.SetParamValues(strconv.Itoa(groupId))
 	_ = s.updateGroup(c)
@@ -31,35 +43,42 @@ func (s *server) updateGroupReq(groupId int, groupJSON string) {
 func TestGetGroups(t *testing.T) {
 	s := NewServer(":8080", db.NewDB())
 
-	rec := s.getGroupsReq()
+	rec, groups := s.getGroupsReq()
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "[]\n", rec.Body.String())
+	assert.Equal(t, 0, len(groups))
 }
 
 func TestAddGroup(t *testing.T) {
 	s := NewServer(":8080", db.NewDB())
 
-	s.addGroupsReq("{\"name\":\"name\"}")
+	group := models.Group{Name: "name"}
+	s.addGroupsReq(group)
 
-	rec := s.getGroupsReq()
+	rec, groups := s.getGroupsReq()
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "[{\"id\":1,\"name\":\"name\"}]\n", rec.Body.String())
+	assert.Equal(t, 1, len(groups))
+	assert.Equal(t, group.Name, groups[0].Name)
 }
 
 func TestUpdateGroup(t *testing.T) {
 	s := NewServer(":8080", db.NewDB())
 
-	s.addGroupsReq("{\"name\":\"name\"}")
+	group := models.Group{Name: "name"}
+	s.addGroupsReq(group)
 
-	rec := s.getGroupsReq()
+	rec, groups := s.getGroupsReq()
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "[{\"id\":1,\"name\":\"name\"}]\n", rec.Body.String())
+	assert.Equal(t, 1, len(groups))
+	assert.Equal(t, group.Name, groups[0].Name)
 
-	s.updateGroupReq(1, "{\"name\":\"new name\"}")
+	group.Id = groups[0].Id
+	group.Name = "new name"
+	s.updateGroupReq(group.Id, group)
 
-	rec = s.getGroupsReq()
+	rec, groups = s.getGroupsReq()
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "[{\"id\":1,\"name\":\"new name\"}]\n", rec.Body.String())
+	assert.Equal(t, 1, len(groups))
+	assert.Equal(t, group.Name, groups[0].Name)
 }
