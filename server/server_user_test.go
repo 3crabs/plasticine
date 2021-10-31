@@ -52,6 +52,13 @@ func (s *server) getUserInfoReq(userId int) models.UserInfo {
 	return userInfo
 }
 
+func (s *server) deleteUserReq(userId int) {
+	_, c := s.delete()
+	c.SetParamNames("userId")
+	c.SetParamValues(strconv.Itoa(userId))
+	_ = s.deleteUser(c)
+}
+
 func TestGetStudents(t *testing.T) {
 	s := NewServer(":8080", db.NewDB())
 
@@ -226,4 +233,25 @@ func TestGetTeacherInfo(t *testing.T) {
 
 	studentInfo := s.getUserInfoReq(teacher.Id)
 	assert.Equal(t, studentInfo.GroupId, 0)
+}
+
+func TestDeleteUser(t *testing.T) {
+	s := NewServer(":8080", db.NewDB())
+
+	student := models.User{
+		LastName:  "lastname",
+		FirstName: "firstname",
+		Role:      models.Student,
+	}
+	s.addUserReq(student)
+	_, students := s.getStudentsReq()
+	student = students[0]
+
+	_, students = s.getStudentsReq()
+	assert.Equal(t, 1, len(students))
+
+	s.deleteUserReq(student.Id)
+
+	_, students = s.getStudentsReq()
+	assert.Equal(t, 0, len(students))
 }

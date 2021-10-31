@@ -13,6 +13,7 @@ func (s *server) routesUser() {
 	s.router.POST("/users", s.addUser)
 	s.router.PUT("/users/:userId", s.updateUser)
 	s.router.GET("/users/:userId", s.getUserInfo)
+	s.router.DELETE("/users/:userId", s.deleteUser)
 }
 
 func (s *server) getStudents(c echo.Context) error {
@@ -62,4 +63,16 @@ func (s *server) getUserInfo(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusOK, userInfo)
+}
+
+func (s *server) deleteUser(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("userId"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	err = s.db.DeleteUser(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.String(http.StatusOK, "user deleted")
 }

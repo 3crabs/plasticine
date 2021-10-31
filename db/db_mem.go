@@ -143,3 +143,14 @@ func (db *db) GetGroupStudents(groupId int) []models.User {
 	}
 	return students
 }
+
+func (db *db) DeleteUser(userId int) error {
+	var users []models.User
+	for _, user := range db.users {
+		if user.Id != userId {
+			users = append(users, user)
+		}
+	}
+	db.users = users
+	return nil
+}

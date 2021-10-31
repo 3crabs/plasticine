@@ -27,3 +27,10 @@ func (s *server) put(body *strings.Reader) (*httptest.ResponseRecorder, echo.Con
 	rec := httptest.NewRecorder()
 	return rec, s.router.NewContext(req, rec)
 }
+
+func (s *server) delete() (*httptest.ResponseRecorder, echo.Context) {
+	req := httptest.NewRequest(http.MethodDelete, "/", nil)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	return rec, s.router.NewContext(req, rec)
+}
