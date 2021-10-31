@@ -15,4 +15,6 @@ type DB interface {
 	UpdateUser(user models.User) error
 	GetUsersByRole(role models.UserRole) []models.User
 	GetUserInfo(studentId int) (*models.UserInfo, error)
+
+	GetGroupStudents(groupId int) []models.User
 }

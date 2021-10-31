@@ -34,6 +34,16 @@ func (s *server) updateGroupReq(groupId int, group models.Group) {
 	_ = s.updateGroup(c)
 }
 
+func (s *server) getGroupStudentsReq(groupId int) (*httptest.ResponseRecorder, []models.User) {
+	rec, c := s.get()
+	c.SetParamNames("groupId")
+	c.SetParamValues(strconv.Itoa(groupId))
+	_ = s.getGroupStudents(c)
+	var students []models.User
+	_ = json.Unmarshal([]byte(rec.Body.String()), &students)
+	return rec, students
+}
+
 func TestGetGroups(t *testing.T) {
 	s := NewServer(":8080", db.NewDB())
 
@@ -75,4 +85,26 @@ func TestUpdateGroup(t *testing.T) {
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.Equal(t, 1, len(groups))
 	assert.Equal(t, group.Name, groups[0].Name)
+}
+
+func TestGetGroupStudents(t *testing.T) {
+	s := NewServer(":8080", db.NewDB())
+
+	group := models.Group{Name: "name"}
+	s.addGroupsReq(group)
+	_, groups := s.getGroupsReq()
+	group = groups[0]
+
+	student := models.User{
+		LastName:  "lastname",
+		FirstName: "firstname",
+		Role:      models.Student,
+		GroupId:   group.Id,
+	}
+	s.addUserReq(student)
+	_, students := s.getStudentsReq()
+	student = students[0]
+
+	_, students = s.getGroupStudentsReq(group.Id)
+	assert.Equal(t, 1, len(students))
 }

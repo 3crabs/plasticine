@@ -133,3 +133,13 @@ func (db *db) GetGroupById(groupId int) (*models.Group, error) {
 	}
 	return group, nil
 }
+
+func (db *db) GetGroupStudents(groupId int) []models.User {
+	var students []models.User
+	for _, user := range db.users {
+		if user.Role == models.Student && user.GroupId == groupId {
+			students = append(students, user)
+		}
+	}
+	return students
+}
