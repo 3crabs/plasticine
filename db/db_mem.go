@@ -40,6 +40,15 @@ func (db *db) GetGroups() []models.Group {
 	return db.groups
 }
 
+func (db *db) GetGroup(groupId int) (*models.Group, error) {
+	for _, g := range db.groups {
+		if g.Id == groupId {
+			return &g, nil
+		}
+	}
+	return nil, errors.New("group not found")
+}
+
 func (db *db) UpdateGroup(group models.Group) error {
 	for i, g := range db.groups {
 		if g.Id == group.Id {

@@ -10,6 +10,7 @@ import (
 func (s *server) routesGroup() {
 	s.router.POST("/groups", s.addGroup)
 	s.router.GET("/groups", s.getGroups)
+	s.router.GET("/groups/:groupId", s.getGroup)
 	s.router.PUT("/groups/:groupId", s.updateGroup)
 	s.router.GET("/groups/:groupId/students", s.getGroupStudents)
 }
@@ -28,6 +29,18 @@ func (s *server) addGroup(c echo.Context) error {
 
 func (s *server) getGroups(c echo.Context) error {
 	return c.JSON(http.StatusOK, s.db.GetGroups())
+}
+
+func (s *server) getGroup(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("groupId"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	group, err := s.db.GetGroup(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	return c.JSON(http.StatusOK, group)
 }
 
 func (s *server) updateGroup(c echo.Context) error {
