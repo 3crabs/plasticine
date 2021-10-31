@@ -58,6 +58,17 @@ func (db *db) UpdateGroup(group models.Group) error {
 	return nil
 }
 
+func (db *db) DeleteGroup(groupId int) error {
+	var groups []models.Group
+	for _, group := range db.groups {
+		if group.Id != groupId {
+			groups = append(groups, group)
+		}
+	}
+	db.groups = groups
+	return nil
+}
+
 func (db *db) AddSubject(subject models.Subject) error {
 	db.subjectSeq++
 	subject.Id = db.subjectSeq

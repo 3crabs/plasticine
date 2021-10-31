@@ -7,6 +7,8 @@ type DB interface {
 	GetGroups() []models.Group
 	GetGroup(groupId int) (*models.Group, error)
 	UpdateGroup(group models.Group) error
+	DeleteGroup(groupId int) error
+	GetGroupStudents(groupId int) []models.User
 
 	AddSubject(subject models.Subject) error
 	GetSubjects() []models.Subject
@@ -17,6 +19,4 @@ type DB interface {
 	GetUsersByRole(role models.UserRole) []models.User
 	GetUserInfo(studentId int) (*models.UserInfo, error)
 	DeleteUser(userId int) error
-
-	GetGroupStudents(groupId int) []models.User
 }

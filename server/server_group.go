@@ -12,6 +12,7 @@ func (s *server) routesGroup() {
 	s.router.GET("/groups", s.getGroups)
 	s.router.GET("/groups/:groupId", s.getGroup)
 	s.router.PUT("/groups/:groupId", s.updateGroup)
+	s.router.DELETE("/groups/:groupId", s.deleteGroup)
 	s.router.GET("/groups/:groupId/students", s.getGroupStudents)
 }
 
@@ -58,6 +59,18 @@ func (s *server) updateGroup(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.String(http.StatusOK, "group updated")
+}
+
+func (s *server) deleteGroup(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("groupId"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	err = s.db.DeleteGroup(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.String(http.StatusOK, "group deleted")
 }
 
 func (s *server) getGroupStudents(c echo.Context) error {

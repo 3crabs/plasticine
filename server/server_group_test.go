@@ -34,6 +34,13 @@ func (s *server) updateGroupReq(groupId int, group models.Group) {
 	_ = s.updateGroup(c)
 }
 
+func (s *server) deleteGroupReq(groupId int) {
+	_, c := s.delete()
+	c.SetParamNames("groupId")
+	c.SetParamValues(strconv.Itoa(groupId))
+	_ = s.deleteGroup(c)
+}
+
 func (s *server) getGroupStudentsReq(groupId int) (*httptest.ResponseRecorder, []models.User) {
 	rec, c := s.get()
 	c.SetParamNames("groupId")
@@ -108,6 +115,23 @@ func TestUpdateGroup(t *testing.T) {
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.Equal(t, 1, len(groups))
 	assert.Equal(t, group.Name, groups[0].Name)
+}
+
+func TestDeleteGroup(t *testing.T) {
+	s := NewServer(":8080", db.NewDB())
+
+	group := models.Group{Name: "name"}
+	s.addGroupsReq(group)
+	_, groups := s.getGroupsReq()
+	group = groups[0]
+
+	_, groups = s.getGroupsReq()
+	assert.Equal(t, 1, len(groups))
+
+	s.deleteGroupReq(group.Id)
+
+	_, groups = s.getGroupsReq()
+	assert.Equal(t, 0, len(groups))
 }
 
 func TestGetGroupStudents(t *testing.T) {
