@@ -98,6 +98,17 @@ func (db *db) GetSubject(subjectId int) (*models.Subject, error) {
 	return nil, errors.New("group not found")
 }
 
+func (db *db) DeleteSubject(subjectId int) error {
+	var subjects []models.Subject
+	for _, s := range db.subjects {
+		if s.Id != subjectId {
+			subjects = append(subjects, s)
+		}
+	}
+	db.subjects = subjects
+	return nil
+}
+
 func (db *db) GetUsersByRole(role models.UserRole) []models.User {
 	var users []models.User
 	for _, u := range db.users {

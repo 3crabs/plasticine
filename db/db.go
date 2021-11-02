@@ -14,6 +14,7 @@ type DB interface {
 	GetSubjects() []models.Subject
 	UpdateSubject(subject models.Subject) error
 	GetSubject(subjectId int) (*models.Subject, error)
+	DeleteSubject(subjectId int) error
 
 	AddUser(user models.User) error
 	UpdateUser(user models.User) error

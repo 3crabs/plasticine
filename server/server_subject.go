@@ -12,6 +12,7 @@ func (s *server) routesSubject() {
 	s.router.GET("/subjects", s.getSubjects)
 	s.router.PUT("/subjects/:subjectId", s.updateSubject)
 	s.router.GET("/subjects/:subjectId", s.getSubject)
+	s.router.DELETE("/subjects/:subjectId", s.deleteSubject)
 }
 
 func (s *server) addSubject(c echo.Context) error {
@@ -57,4 +58,16 @@ func (s *server) getSubject(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusOK, subject)
+}
+
+func (s *server) deleteSubject(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("subjectId"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	err = s.db.DeleteSubject(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.String(http.StatusOK, "subject deleted")
 }

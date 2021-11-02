@@ -44,6 +44,13 @@ func (s *server) getSubjectReq(subjectId int) (*httptest.ResponseRecorder, model
 	return rec, subject
 }
 
+func (s *server) deleteSubjectReq(subjectId int) {
+	_, c := s.delete()
+	c.SetParamNames("subjectId")
+	c.SetParamValues(strconv.Itoa(subjectId))
+	_ = s.deleteSubject(c)
+}
+
 func TestGetSubjects(t *testing.T) {
 	s := NewServer(":8080", db.NewDB())
 
@@ -98,4 +105,19 @@ func TestGetSubject(t *testing.T) {
 	_, subject = s.getSubjectReq(subject.Id)
 
 	assert.Equal(t, "name", subject.Name)
+}
+
+func TestDeleteSubject(t *testing.T) {
+	s := NewServer(":8080", db.NewDB())
+
+	subject := models.Subject{Name: "name"}
+	s.addSubjectReq(subject)
+
+	_, subjects := s.getSubjectsReq()
+	assert.Equal(t, 1, len(subjects))
+
+	s.deleteSubjectReq(subjects[0].Id)
+
+	_, subjects = s.getSubjectsReq()
+	assert.Equal(t, 0, len(subjects))
 }
