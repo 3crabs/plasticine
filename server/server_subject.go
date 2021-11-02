@@ -9,8 +9,9 @@ import (
 
 func (s *server) routesSubject() {
 	s.router.POST("/subjects", s.addSubject)
-	s.router.GET("/subjects", s.getGroups)
-	s.router.PUT("/subjects/:subjectId", s.updateGroup)
+	s.router.GET("/subjects", s.getSubjects)
+	s.router.PUT("/subjects/:subjectId", s.updateSubject)
+	s.router.GET("/subjects/:subjectId", s.getSubject)
 }
 
 func (s *server) addSubject(c echo.Context) error {
@@ -44,4 +45,16 @@ func (s *server) updateSubject(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.String(http.StatusOK, "subject updated")
+}
+
+func (s *server) getSubject(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("subjectId"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	subject, err := s.db.GetSubject(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, subject)
 }

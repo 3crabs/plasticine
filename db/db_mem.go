@@ -89,6 +89,15 @@ func (db *db) UpdateSubject(subject models.Subject) error {
 	return nil
 }
 
+func (db *db) GetSubject(subjectId int) (*models.Subject, error) {
+	for _, s := range db.subjects {
+		if s.Id == subjectId {
+			return &s, nil
+		}
+	}
+	return nil, errors.New("group not found")
+}
+
 func (db *db) GetUsersByRole(role models.UserRole) []models.User {
 	var users []models.User
 	for _, u := range db.users {

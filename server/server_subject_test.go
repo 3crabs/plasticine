@@ -21,9 +21,9 @@ func (s *server) addSubjectReq(subject models.Subject) {
 func (s *server) getSubjectsReq() (*httptest.ResponseRecorder, []models.Subject) {
 	rec, c := s.get()
 	_ = s.getSubjects(c)
-	var subject []models.Subject
-	_ = json.Unmarshal([]byte(rec.Body.String()), &subject)
-	return rec, subject
+	var subjects []models.Subject
+	_ = json.Unmarshal([]byte(rec.Body.String()), &subjects)
+	return rec, subjects
 }
 
 func (s *server) updateSubjectReq(subjectId int, subject models.Subject) {
@@ -32,6 +32,16 @@ func (s *server) updateSubjectReq(subjectId int, subject models.Subject) {
 	c.SetParamNames("subjectId")
 	c.SetParamValues(strconv.Itoa(subjectId))
 	_ = s.updateSubject(c)
+}
+
+func (s *server) getSubjectReq(subjectId int) (*httptest.ResponseRecorder, models.Subject) {
+	rec, c := s.get()
+	c.SetParamNames("subjectId")
+	c.SetParamValues(strconv.Itoa(subjectId))
+	_ = s.getSubject(c)
+	var subject models.Subject
+	_ = json.Unmarshal([]byte(rec.Body.String()), &subject)
+	return rec, subject
 }
 
 func TestGetSubjects(t *testing.T) {
@@ -75,4 +85,17 @@ func TestUpdateSubject(t *testing.T) {
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.Equal(t, 1, len(subjects))
 	assert.Equal(t, subject.Name, subjects[0].Name)
+}
+
+func TestGetSubject(t *testing.T) {
+	s := NewServer(":8080", db.NewDB())
+
+	subject := models.Subject{Name: "name"}
+	s.addSubjectReq(subject)
+	_, subjects := s.getSubjectsReq()
+	subject = subjects[0]
+
+	_, subject = s.getSubjectReq(subject.Id)
+
+	assert.Equal(t, "name", subject.Name)
 }
