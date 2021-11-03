@@ -14,6 +14,9 @@ type db struct {
 
 	userSeq int
 	users   []models.User
+
+	placeSeq int
+	places   []models.Place
 }
 
 func NewDB() DB {
@@ -26,6 +29,9 @@ func NewDB() DB {
 
 		userSeq: 0,
 		users:   []models.User{},
+
+		placeSeq: 0,
+		places:   []models.Place{},
 	}
 }
 
@@ -192,5 +198,36 @@ func (db *db) DeleteUser(userId int) error {
 		}
 	}
 	db.users = users
+	return nil
+}
+
+func (db *db) AddPlace(place models.Place) error {
+	db.placeSeq++
+	place.Id = db.placeSeq
+	db.places = append(db.places, place)
+	return nil
+}
+
+func (db *db) GetPlaces() []models.Place {
+	return db.places
+}
+
+func (db *db) UpdatePlace(place models.Place) error {
+	for i, p := range db.places {
+		if p.Id == place.Id {
+			db.places[i] = place
+		}
+	}
+	return nil
+}
+
+func (db *db) DeletePlace(placeId int) error {
+	var places []models.Place
+	for _, p := range db.places {
+		if p.Id != placeId {
+			places = append(places, p)
+		}
+	}
+	db.places = places
 	return nil
 }

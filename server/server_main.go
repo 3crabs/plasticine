@@ -23,6 +23,7 @@ func NewServer(port string, db db.DB) *server {
 
 func (s *server) routes() {
 	s.routesGroup()
+	s.routesPlace()
 	s.routesSubject()
 	s.routesUser()
 }

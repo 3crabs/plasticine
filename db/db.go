@@ -21,4 +21,9 @@ type DB interface {
 	GetUsersByRole(role models.UserRole) []models.User
 	GetUserInfo(studentId int) (*models.UserInfo, error)
 	DeleteUser(userId int) error
+
+	AddPlace(place models.Place) error
+	GetPlaces() []models.Place
+	UpdatePlace(place models.Place) error
+	DeletePlace(placeId int) error
 }
