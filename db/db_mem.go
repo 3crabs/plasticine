@@ -17,6 +17,9 @@ type db struct {
 
 	placeSeq int
 	places   []models.Place
+
+	lessonSeq int
+	lessons   []models.Lesson
 }
 
 func NewDB() DB {
@@ -32,6 +35,9 @@ func NewDB() DB {
 
 		placeSeq: 0,
 		places:   []models.Place{},
+
+		lessonSeq: 0,
+		lessons:   []models.Lesson{},
 	}
 }
 
@@ -236,5 +242,51 @@ func (db *db) DeletePlace(placeId int) error {
 }
 
 func (db *db) getLessonsByGroupId(groupId int) []models.Lesson {
-	return []models.Lesson{}
+	var lessons []models.Lesson
+	for _, l := range db.lessons {
+		if l.GroupId == groupId {
+			lessons = append(lessons, l)
+		}
+	}
+	if lessons == nil {
+		return []models.Lesson{}
+	}
+	return lessons
+}
+
+func (db *db) AddLesson(lesson models.Lesson) error {
+	db.lessonSeq++
+	lesson.Id = db.lessonSeq
+	db.lessons = append(db.lessons, lesson)
+	return nil
+}
+
+func (db *db) GetLessons(groupId int) []models.Lesson {
+	var lessons []models.Lesson
+	for _, l := range db.lessons {
+		if l.GroupId == groupId {
+			lessons = append(lessons, l)
+		}
+	}
+	return lessons
+}
+
+func (db *db) UpdateLesson(lesson models.Lesson) error {
+	for i, l := range db.lessons {
+		if l.Id == lesson.Id {
+			db.lessons[i] = lesson
+		}
+	}
+	return nil
+}
+
+func (db *db) DeleteLesson(lessonId int) error {
+	var lessons []models.Lesson
+	for _, l := range db.lessons {
+		if l.Id != lessonId {
+			lessons = append(lessons, l)
+		}
+	}
+	db.lessons = lessons
+	return nil
 }

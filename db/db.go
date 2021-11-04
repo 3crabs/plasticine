@@ -26,4 +26,9 @@ type DB interface {
 	GetPlaces() []models.Place
 	UpdatePlace(place models.Place) error
 	DeletePlace(placeId int) error
+
+	AddLesson(lesson models.Lesson) error
+	GetLessons(groupId int) []models.Lesson
+	UpdateLesson(lesson models.Lesson) error
+	DeleteLesson(lessonId int) error
 }
