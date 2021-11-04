@@ -46,10 +46,13 @@ func (db *db) GetGroups() []models.Group {
 	return db.groups
 }
 
-func (db *db) GetGroup(groupId int) (*models.Group, error) {
+func (db *db) GetGroup(groupId int) (*models.GroupInfo, error) {
 	for _, g := range db.groups {
 		if g.Id == groupId {
-			return &g, nil
+			return &models.GroupInfo{
+				Group:   &g,
+				Lessons: db.getLessonsByGroupId(groupId),
+			}, nil
 		}
 	}
 	return nil, errors.New("group not found")
@@ -158,7 +161,7 @@ func (db *db) GetUserInfo(userId int) (*models.UserInfo, error) {
 		User: user,
 	}
 	if user.GroupId != 0 {
-		group, err := db.GetGroupById(user.GroupId)
+		group, err := db.getGroupById(user.GroupId)
 		if err != nil {
 			return nil, err
 		}
@@ -167,7 +170,7 @@ func (db *db) GetUserInfo(userId int) (*models.UserInfo, error) {
 	return &userInfo, nil
 }
 
-func (db *db) GetGroupById(groupId int) (*models.Group, error) {
+func (db *db) getGroupById(groupId int) (*models.Group, error) {
 	var group *models.Group
 	for _, g := range db.groups {
 		if g.Id == groupId {
@@ -230,4 +233,8 @@ func (db *db) DeletePlace(placeId int) error {
 	}
 	db.places = places
 	return nil
+}
+
+func (db *db) getLessonsByGroupId(groupId int) []models.Lesson {
+	return []models.Lesson{}
 }

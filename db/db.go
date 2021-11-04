@@ -5,7 +5,7 @@ import "plasticine/models"
 type DB interface {
 	AddGroup(group models.Group) error
 	GetGroups() []models.Group
-	GetGroup(groupId int) (*models.Group, error)
+	GetGroup(groupId int) (*models.GroupInfo, error)
 	UpdateGroup(group models.Group) error
 	DeleteGroup(groupId int) error
 	GetGroupStudents(groupId int) []models.User
