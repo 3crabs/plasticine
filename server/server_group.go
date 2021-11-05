@@ -8,12 +8,12 @@ import (
 )
 
 func (s *server) routesGroup() {
-	s.router.POST("/groups", s.addGroup)
-	s.router.GET("/groups", s.getGroups)
-	s.router.GET("/groups/:groupId", s.getGroup)
-	s.router.PUT("/groups/:groupId", s.updateGroup)
-	s.router.DELETE("/groups/:groupId", s.deleteGroup)
-	s.router.GET("/groups/:groupId/students", s.getGroupStudents)
+	s.routerAuthGroup.POST("/groups", s.addGroup)
+	s.routerOpenGroup.GET("/groups", s.getGroups)
+	s.routerOpenGroup.GET("/groups/:groupId", s.getGroup)
+	s.routerAuthGroup.PUT("/groups/:groupId", s.updateGroup)
+	s.routerAuthGroup.DELETE("/groups/:groupId", s.deleteGroup)
+	s.routerOpenGroup.GET("/groups/:groupId/students", s.getGroupStudents)
 }
 
 func (s *server) addGroup(c echo.Context) error {

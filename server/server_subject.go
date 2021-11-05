@@ -8,11 +8,11 @@ import (
 )
 
 func (s *server) routesSubject() {
-	s.router.POST("/subjects", s.addSubject)
-	s.router.GET("/subjects", s.getSubjects)
-	s.router.PUT("/subjects/:subjectId", s.updateSubject)
-	s.router.GET("/subjects/:subjectId", s.getSubject)
-	s.router.DELETE("/subjects/:subjectId", s.deleteSubject)
+	s.routerAuthGroup.POST("/subjects", s.addSubject)
+	s.routerOpenGroup.GET("/subjects", s.getSubjects)
+	s.routerAuthGroup.PUT("/subjects/:subjectId", s.updateSubject)
+	s.routerOpenGroup.GET("/subjects/:subjectId", s.getSubject)
+	s.routerAuthGroup.DELETE("/subjects/:subjectId", s.deleteSubject)
 }
 
 func (s *server) addSubject(c echo.Context) error {

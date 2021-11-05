@@ -8,12 +8,12 @@ import (
 )
 
 func (s *server) routesUser() {
-	s.router.GET("/students", s.getStudents)
-	s.router.GET("/teachers", s.getStudents)
-	s.router.POST("/users", s.addUser)
-	s.router.PUT("/users/:userId", s.updateUser)
-	s.router.GET("/users/:userId", s.getUserInfo)
-	s.router.DELETE("/users/:userId", s.deleteUser)
+	s.routerOpenGroup.GET("/students", s.getStudents)
+	s.routerOpenGroup.GET("/teachers", s.getStudents)
+	s.routerAuthGroup.POST("/users", s.addUser)
+	s.routerAuthGroup.PUT("/users/:userId", s.updateUser)
+	s.routerOpenGroup.GET("/users/:userId", s.getUserInfo)
+	s.routerAuthGroup.DELETE("/users/:userId", s.deleteUser)
 }
 
 func (s *server) getStudents(c echo.Context) error {

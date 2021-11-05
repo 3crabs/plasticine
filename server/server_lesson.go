@@ -8,10 +8,10 @@ import (
 )
 
 func (s *server) routesLesson() {
-	s.router.POST("/lessons", s.addLesson)
-	s.router.GET("/lessons", s.getLessons)
-	s.router.PUT("/lessons/:lessonId", s.updateLesson)
-	s.router.DELETE("/lessons/:lessonId", s.deleteLesson)
+	s.routerAuthGroup.POST("/lessons", s.addLesson)
+	s.routerOpenGroup.GET("/lessons", s.getLessons)
+	s.routerAuthGroup.PUT("/lessons/:lessonId", s.updateLesson)
+	s.routerAuthGroup.DELETE("/lessons/:lessonId", s.deleteLesson)
 }
 
 func (s *server) addLesson(c echo.Context) error {

@@ -8,10 +8,10 @@ import (
 )
 
 func (s *server) routesPlace() {
-	s.router.POST("/places", s.addPlace)
-	s.router.GET("/places", s.getPlaces)
-	s.router.PUT("/places/:placeId", s.updatePlace)
-	s.router.DELETE("/places/:placeId", s.deletePlace)
+	s.routerAuthGroup.POST("/places", s.addPlace)
+	s.routerOpenGroup.GET("/places", s.getPlaces)
+	s.routerAuthGroup.PUT("/places/:placeId", s.updatePlace)
+	s.routerAuthGroup.DELETE("/places/:placeId", s.deletePlace)
 }
 
 func (s *server) addPlace(c echo.Context) error {
