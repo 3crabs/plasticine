@@ -45,7 +45,7 @@ func (s *server) deleteLessonReq(lessonId int) {
 }
 
 func TestGetLessons(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	rec, lessons := s.getLessonsReq(0)
 
@@ -54,7 +54,7 @@ func TestGetLessons(t *testing.T) {
 }
 
 func TestAddLesson(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	place := models.Place{Name: "place name"}
 	s.addPlaceReq(place)
@@ -102,7 +102,7 @@ func TestAddLesson(t *testing.T) {
 }
 
 func TestUpdateLesson(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	place := models.Place{Name: "place name"}
 	s.addPlaceReq(place)
@@ -151,7 +151,7 @@ func TestUpdateLesson(t *testing.T) {
 }
 
 func TestDeleteLesson(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	place := models.Place{Name: "place name"}
 	s.addPlaceReq(place)

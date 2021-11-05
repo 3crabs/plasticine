@@ -32,3 +32,7 @@ type DB interface {
 	UpdateLesson(lesson models.Lesson) error
 	DeleteLesson(lessonId int) error
 }
+
+func NewDefaultDb() DB {
+	return newDbMem()
+}

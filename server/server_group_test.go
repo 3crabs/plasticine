@@ -62,7 +62,7 @@ func (s *server) getGroupReq(groupId int) (*httptest.ResponseRecorder, models.Gr
 }
 
 func TestGetGroups(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	rec, groups := s.getGroupsReq()
 
@@ -71,7 +71,7 @@ func TestGetGroups(t *testing.T) {
 }
 
 func TestAddGroup(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	group := models.Group{Name: "name"}
 	s.addGroupsReq(group)
@@ -84,7 +84,7 @@ func TestAddGroup(t *testing.T) {
 }
 
 func TestGetGroup(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	group := models.Group{Name: "name"}
 	s.addGroupsReq(group)
@@ -99,7 +99,7 @@ func TestGetGroup(t *testing.T) {
 }
 
 func TestUpdateGroup(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	group := models.Group{Name: "name"}
 	s.addGroupsReq(group)
@@ -120,7 +120,7 @@ func TestUpdateGroup(t *testing.T) {
 }
 
 func TestDeleteGroup(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	group := models.Group{Name: "name"}
 	s.addGroupsReq(group)
@@ -137,7 +137,7 @@ func TestDeleteGroup(t *testing.T) {
 }
 
 func TestGetGroupStudents(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	group := models.Group{Name: "name"}
 	s.addGroupsReq(group)

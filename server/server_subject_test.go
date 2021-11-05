@@ -52,7 +52,7 @@ func (s *server) deleteSubjectReq(subjectId int) {
 }
 
 func TestGetSubjects(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	rec, subjects := s.getSubjectsReq()
 
@@ -61,7 +61,7 @@ func TestGetSubjects(t *testing.T) {
 }
 
 func TestAddSubject(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	subject := models.Subject{Name: "name"}
 	s.addSubjectReq(subject)
@@ -74,7 +74,7 @@ func TestAddSubject(t *testing.T) {
 }
 
 func TestUpdateSubject(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	subject := models.Subject{Name: "name"}
 	s.addSubjectReq(subject)
@@ -95,7 +95,7 @@ func TestUpdateSubject(t *testing.T) {
 }
 
 func TestGetSubject(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	subject := models.Subject{Name: "name"}
 	s.addSubjectReq(subject)
@@ -108,7 +108,7 @@ func TestGetSubject(t *testing.T) {
 }
 
 func TestDeleteSubject(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	subject := models.Subject{Name: "name"}
 	s.addSubjectReq(subject)

@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	server.NewServer(":8080", db.NewDB()).Run()
+	server.NewServer(":8080", db.NewDefaultDb()).Run()
 }

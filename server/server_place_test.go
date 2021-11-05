@@ -42,7 +42,7 @@ func (s *server) deletePlaceReq(placeId int) {
 }
 
 func TestGetPlaces(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	rec, places := s.getPlacesReq()
 
@@ -51,7 +51,7 @@ func TestGetPlaces(t *testing.T) {
 }
 
 func TestAddPlace(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	place := models.Place{Name: "name"}
 	s.addPlaceReq(place)
@@ -64,7 +64,7 @@ func TestAddPlace(t *testing.T) {
 }
 
 func TestUpdatePlace(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	place := models.Place{Name: "name"}
 	s.addPlaceReq(place)
@@ -85,7 +85,7 @@ func TestUpdatePlace(t *testing.T) {
 }
 
 func TestDeletePlace(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	place := models.Place{Name: "name"}
 	s.addPlaceReq(place)

@@ -22,7 +22,7 @@ type dbMem struct {
 	lessons   []models.Lesson
 }
 
-func NewDB() DB {
+func newDbMem() DB {
 	return &dbMem{
 		groupSeq: 0,
 		groups:   []models.Group{},

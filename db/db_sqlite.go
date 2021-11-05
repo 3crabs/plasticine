@@ -6,7 +6,7 @@ import (
 
 type dbSQLite struct{}
 
-func NewDbSQLite() DB {
+func newDbSQLite() DB {
 	return &dbSQLite{}
 }
 

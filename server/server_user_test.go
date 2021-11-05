@@ -60,7 +60,7 @@ func (s *server) deleteUserReq(userId int) {
 }
 
 func TestGetStudents(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	rec, students := s.getStudentsReq()
 
@@ -69,7 +69,7 @@ func TestGetStudents(t *testing.T) {
 }
 
 func TestGetTeachers(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	rec, teachers := s.getTeachersReq()
 
@@ -78,7 +78,7 @@ func TestGetTeachers(t *testing.T) {
 }
 
 func TestAddStudent(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	student := models.User{
 		LastName:  "lastname",
@@ -96,7 +96,7 @@ func TestAddStudent(t *testing.T) {
 }
 
 func TestAddTeacher(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	teacher := models.User{
 		LastName:  "lastname",
@@ -114,7 +114,7 @@ func TestAddTeacher(t *testing.T) {
 }
 
 func TestUpdateStudent(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	student := models.User{
 		LastName:  "lastname",
@@ -142,7 +142,7 @@ func TestUpdateStudent(t *testing.T) {
 }
 
 func TestUpdateTeacher(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	teacher := models.User{
 		LastName:  "lastname",
@@ -170,7 +170,7 @@ func TestUpdateTeacher(t *testing.T) {
 }
 
 func TestAddGroupForStudent(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	group := models.Group{Name: "name"}
 	s.addGroupsReq(group)
@@ -196,7 +196,7 @@ func TestAddGroupForStudent(t *testing.T) {
 }
 
 func TestGetStudentInfo(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	group := models.Group{Name: "name"}
 	s.addGroupsReq(group)
@@ -220,7 +220,7 @@ func TestGetStudentInfo(t *testing.T) {
 }
 
 func TestGetTeacherInfo(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	teacher := models.User{
 		LastName:  "lastname",
@@ -236,7 +236,7 @@ func TestGetTeacherInfo(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
-	s := NewServer(":8080", db.NewDB())
+	s := NewServer(":8080", db.NewDefaultDb())
 
 	student := models.User{
 		LastName:  "lastname",
