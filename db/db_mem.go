@@ -5,7 +5,7 @@ import (
 	"plasticine/models"
 )
 
-type db struct {
+type dbMem struct {
 	groupSeq int
 	groups   []models.Group
 
@@ -23,7 +23,7 @@ type db struct {
 }
 
 func NewDB() DB {
-	return &db{
+	return &dbMem{
 		groupSeq: 0,
 		groups:   []models.Group{},
 
@@ -41,18 +41,18 @@ func NewDB() DB {
 	}
 }
 
-func (db *db) AddGroup(group models.Group) error {
+func (db *dbMem) AddGroup(group models.Group) error {
 	db.groupSeq++
 	group.Id = db.groupSeq
 	db.groups = append(db.groups, group)
 	return nil
 }
 
-func (db *db) GetGroups() []models.Group {
+func (db *dbMem) GetGroups() []models.Group {
 	return db.groups
 }
 
-func (db *db) GetGroup(groupId int) (*models.GroupInfo, error) {
+func (db *dbMem) GetGroup(groupId int) (*models.GroupInfo, error) {
 	for _, g := range db.groups {
 		if g.Id == groupId {
 			return &models.GroupInfo{
@@ -64,7 +64,7 @@ func (db *db) GetGroup(groupId int) (*models.GroupInfo, error) {
 	return nil, errors.New("group not found")
 }
 
-func (db *db) UpdateGroup(group models.Group) error {
+func (db *dbMem) UpdateGroup(group models.Group) error {
 	for i, g := range db.groups {
 		if g.Id == group.Id {
 			db.groups[i] = group
@@ -73,7 +73,7 @@ func (db *db) UpdateGroup(group models.Group) error {
 	return nil
 }
 
-func (db *db) DeleteGroup(groupId int) error {
+func (db *dbMem) DeleteGroup(groupId int) error {
 	var groups []models.Group
 	for _, group := range db.groups {
 		if group.Id != groupId {
@@ -84,18 +84,18 @@ func (db *db) DeleteGroup(groupId int) error {
 	return nil
 }
 
-func (db *db) AddSubject(subject models.Subject) error {
+func (db *dbMem) AddSubject(subject models.Subject) error {
 	db.subjectSeq++
 	subject.Id = db.subjectSeq
 	db.subjects = append(db.subjects, subject)
 	return nil
 }
 
-func (db *db) GetSubjects() []models.Subject {
+func (db *dbMem) GetSubjects() []models.Subject {
 	return db.subjects
 }
 
-func (db *db) UpdateSubject(subject models.Subject) error {
+func (db *dbMem) UpdateSubject(subject models.Subject) error {
 	for i, s := range db.subjects {
 		if s.Id == subject.Id {
 			db.subjects[i] = subject
@@ -104,7 +104,7 @@ func (db *db) UpdateSubject(subject models.Subject) error {
 	return nil
 }
 
-func (db *db) GetSubject(subjectId int) (*models.Subject, error) {
+func (db *dbMem) GetSubject(subjectId int) (*models.Subject, error) {
 	for _, s := range db.subjects {
 		if s.Id == subjectId {
 			return &s, nil
@@ -113,7 +113,7 @@ func (db *db) GetSubject(subjectId int) (*models.Subject, error) {
 	return nil, errors.New("group not found")
 }
 
-func (db *db) DeleteSubject(subjectId int) error {
+func (db *dbMem) DeleteSubject(subjectId int) error {
 	var subjects []models.Subject
 	for _, s := range db.subjects {
 		if s.Id != subjectId {
@@ -124,7 +124,7 @@ func (db *db) DeleteSubject(subjectId int) error {
 	return nil
 }
 
-func (db *db) GetUsersByRole(role models.UserRole) []models.User {
+func (db *dbMem) GetUsersByRole(role models.UserRole) []models.User {
 	var users []models.User
 	for _, u := range db.users {
 		if u.Role == role {
@@ -137,14 +137,14 @@ func (db *db) GetUsersByRole(role models.UserRole) []models.User {
 	return users
 }
 
-func (db *db) AddUser(user models.User) error {
+func (db *dbMem) AddUser(user models.User) error {
 	db.userSeq++
 	user.Id = db.userSeq
 	db.users = append(db.users, user)
 	return nil
 }
 
-func (db *db) UpdateUser(user models.User) error {
+func (db *dbMem) UpdateUser(user models.User) error {
 	for i, u := range db.users {
 		if u.Id == user.Id {
 			db.users[i] = user
@@ -153,7 +153,7 @@ func (db *db) UpdateUser(user models.User) error {
 	return nil
 }
 
-func (db *db) GetUserInfo(userId int) (*models.UserInfo, error) {
+func (db *dbMem) GetUserInfo(userId int) (*models.UserInfo, error) {
 	var user *models.User
 	for _, u := range db.users {
 		if u.Id == userId {
@@ -176,7 +176,7 @@ func (db *db) GetUserInfo(userId int) (*models.UserInfo, error) {
 	return &userInfo, nil
 }
 
-func (db *db) getGroupById(groupId int) (*models.Group, error) {
+func (db *dbMem) getGroupById(groupId int) (*models.Group, error) {
 	var group *models.Group
 	for _, g := range db.groups {
 		if g.Id == groupId {
@@ -189,7 +189,7 @@ func (db *db) getGroupById(groupId int) (*models.Group, error) {
 	return group, nil
 }
 
-func (db *db) GetGroupStudents(groupId int) []models.User {
+func (db *dbMem) GetGroupStudents(groupId int) []models.User {
 	var students []models.User
 	for _, user := range db.users {
 		if user.Role == models.Student && user.GroupId == groupId {
@@ -199,7 +199,7 @@ func (db *db) GetGroupStudents(groupId int) []models.User {
 	return students
 }
 
-func (db *db) DeleteUser(userId int) error {
+func (db *dbMem) DeleteUser(userId int) error {
 	var users []models.User
 	for _, user := range db.users {
 		if user.Id != userId {
@@ -210,18 +210,18 @@ func (db *db) DeleteUser(userId int) error {
 	return nil
 }
 
-func (db *db) AddPlace(place models.Place) error {
+func (db *dbMem) AddPlace(place models.Place) error {
 	db.placeSeq++
 	place.Id = db.placeSeq
 	db.places = append(db.places, place)
 	return nil
 }
 
-func (db *db) GetPlaces() []models.Place {
+func (db *dbMem) GetPlaces() []models.Place {
 	return db.places
 }
 
-func (db *db) UpdatePlace(place models.Place) error {
+func (db *dbMem) UpdatePlace(place models.Place) error {
 	for i, p := range db.places {
 		if p.Id == place.Id {
 			db.places[i] = place
@@ -230,7 +230,7 @@ func (db *db) UpdatePlace(place models.Place) error {
 	return nil
 }
 
-func (db *db) DeletePlace(placeId int) error {
+func (db *dbMem) DeletePlace(placeId int) error {
 	var places []models.Place
 	for _, p := range db.places {
 		if p.Id != placeId {
@@ -241,7 +241,7 @@ func (db *db) DeletePlace(placeId int) error {
 	return nil
 }
 
-func (db *db) getLessonsByGroupId(groupId int) []models.Lesson {
+func (db *dbMem) getLessonsByGroupId(groupId int) []models.Lesson {
 	var lessons []models.Lesson
 	for _, l := range db.lessons {
 		if l.GroupId == groupId {
@@ -254,14 +254,14 @@ func (db *db) getLessonsByGroupId(groupId int) []models.Lesson {
 	return lessons
 }
 
-func (db *db) AddLesson(lesson models.Lesson) error {
+func (db *dbMem) AddLesson(lesson models.Lesson) error {
 	db.lessonSeq++
 	lesson.Id = db.lessonSeq
 	db.lessons = append(db.lessons, lesson)
 	return nil
 }
 
-func (db *db) GetLessons(groupId int) []models.Lesson {
+func (db *dbMem) GetLessons(groupId int) []models.Lesson {
 	var lessons []models.Lesson
 	for _, l := range db.lessons {
 		if l.GroupId == groupId {
@@ -271,7 +271,7 @@ func (db *db) GetLessons(groupId int) []models.Lesson {
 	return lessons
 }
 
-func (db *db) UpdateLesson(lesson models.Lesson) error {
+func (db *dbMem) UpdateLesson(lesson models.Lesson) error {
 	for i, l := range db.lessons {
 		if l.Id == lesson.Id {
 			db.lessons[i] = lesson
@@ -280,7 +280,7 @@ func (db *db) UpdateLesson(lesson models.Lesson) error {
 	return nil
 }
 
-func (db *db) DeleteLesson(lessonId int) error {
+func (db *dbMem) DeleteLesson(lessonId int) error {
 	var lessons []models.Lesson
 	for _, l := range db.lessons {
 		if l.Id != lessonId {
