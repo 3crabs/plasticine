@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"net/http"
 	"plasticine/db"
 )
 
@@ -20,6 +21,10 @@ func NewServer(port string, db db.DB) *server {
 		db:     db,
 		port:   port,
 	}
+	s.router.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+	}))
 	s.routes()
 	return s
 }
